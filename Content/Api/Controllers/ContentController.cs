@@ -1,6 +1,7 @@
 using Application.Common.Helpers.Pagination;
 using Application.UseCases.Contents.Commands.CreateContent;
 using Application.UseCases.Contents.Commands.CreateContentId;
+using Application.UseCases.Contents.Commands.DeleteContent;
 using Application.UseCases.Contents.Queries.GetAllContentsPaginated;
 
 namespace Api.Controllers;
@@ -31,6 +32,12 @@ public class ContentController : ControllerBase
     public async Task<PaginationResponse<GetAllContentsPaginatedDto>> CreateContent(int pageNumber = 1, int pageSize = 5, string filter = "")
     {
         return await _mediator.Send(new GetAllContentsPaginatedQuery(filter, pageNumber, pageSize));
+    }
+    
+    [HttpDelete("{id:guid}")]
+    public async Task Delete(Guid id)
+    {
+        await _mediator.Send(new DeleteContentCommand(id));
     }
 
 }
