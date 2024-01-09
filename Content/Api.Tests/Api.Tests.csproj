@@ -35,4 +35,8 @@
       <ProjectReference Include="..\Domain.Tests\Domain.Tests.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="BuilderCommands\" />
+    </ItemGroup>
+
 </Project>

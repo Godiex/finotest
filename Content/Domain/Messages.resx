@@ -27,12 +27,6 @@
     <data name="ResourceNotFoundException" xml:space="preserve">
         <value>No se encontro el recurso {0}</value>
     </data>
-    <data name="InvalidEmailException" xml:space="preserve">
-        <value>El correo no es valido</value>
-    </data>
-    <data name="InvalidHostException" xml:space="preserve">
-        <value>El host entrante no es valido</value>
-    </data>
     <data name="IdMismatchException" xml:space="preserve">
         <value>El Id proporcionado en la ruta no coincide con el Id en el cuerpo de la solicitud</value>
     </data>

@@ -24,9 +24,6 @@ public class ApiApp : WebApplicationFactory<Program>
             {
                 opt.UseInMemoryDatabase("testdb");
             });
-
-            services.AddTransient<IDataSeeder, CommercialSegmentSeeder>();
-            services.AddTransient<IDataSeeder, CompanySeeder>();
         });
         SeedDatabase(builder.Build().Services);
         return base.CreateHost(builder);

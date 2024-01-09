@@ -6,17 +6,24 @@ public class Content : EntityBase<Guid>, IAggregateRoot
     public string? LogoUrl { get; set; }
     public List<string>? Multimedia { get; set; }
     public List<string>? Languages { get; set; }
+    public DynamicContent? TitleContent { get; set; }
+    public List<Item>? Items { get; set; }
 
-    public Content(Guid id, string name, string description)
-    {
-        Id = id;
-        Name = name;
-        Description = description;
-    }
+    public Content() { }
 
-    public void Update(string name, string description)
+    public Content(
+        string tag,
+        string? logoUrl = null,
+        List<string>? multimedia = null,
+        List<string>? languages = null,
+        DynamicContent? titleContent = null,
+        List<Item>? items = null)
     {
-        if (Name.Equals(name) is not true) Name = name;
-        if (Description.Equals(description) is not true) Description = description;
+        Tag = tag;
+        LogoUrl = logoUrl;
+        Multimedia = multimedia;
+        Languages = languages;
+        TitleContent = titleContent;
+        Items = items;
     }
 }

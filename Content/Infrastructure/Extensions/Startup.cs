@@ -20,7 +20,6 @@ public static class Startup
     public static void AddInfrastructure(this IServiceCollection services, IConfiguration config, IWebHostEnvironment env)
     {
         services
-            .AddGraphQL()
             .AddOpenApiDocumentation(env)
             .AddValidation()
             .AddMediator()

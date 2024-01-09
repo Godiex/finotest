@@ -1,5 +1,4 @@
 ﻿using Infrastructure.Context;
-using Infrastructure.Inicialize.Entities;
 
 namespace Infrastructure.Inicialize
 {
@@ -13,8 +12,7 @@ namespace Infrastructure.Inicialize
 
         public async Task InitializeDatabasesAsync()
         {
-            await CommercialSegmentSeeder.InitializeAsync(_context);
-            await DocumentTypeSeeder.InitializeAsync(_context);
+            
         }
     }
 }

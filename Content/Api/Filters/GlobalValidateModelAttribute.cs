@@ -33,7 +33,7 @@ public class GlobalValidateModelAttribute : IActionFilter
 
     private static string GenerateErrorMessage(ActionContext context)
     {
-        var keyError = context.ModelState.Keys.Last();
+        var keyError = string.Join(" ", context.ModelState.Keys);
         var errorMessage = string.Format(Messages.BadRequestException, keyError);
         return errorMessage;
     }

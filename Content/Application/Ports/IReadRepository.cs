@@ -13,6 +13,7 @@ public interface IReadRepository<T>
     Task<List<T>> ListAsync(CancellationToken cancellationToken = default);
     Task<List<T>> ListAsync(ISpecification<T> specification, CancellationToken cancellationToken = default);
     Task<List<TResult>> ListAsync<TResult>(ISpecification<T, TResult> specification, CancellationToken cancellationToken = default);
+    Task<List<TResult>> PaginateAsync<TResult>(ISpecification<T, TResult> specification, int pageNumber, int pageSize, CancellationToken cancellationToken = default);
     Task<int> CountAsync(ISpecification<T> specification, CancellationToken cancellationToken = default);
     Task<int> CountAsync(CancellationToken cancellationToken = default);
     Task<bool> AnyAsync(ISpecification<T> specification, CancellationToken cancellationToken = default);

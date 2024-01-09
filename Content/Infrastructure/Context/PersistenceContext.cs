@@ -19,11 +19,8 @@ namespace Infrastructure.Context
             _databaseSettings = databaseSettings.Value ?? throw new ArgumentNullException(nameof(databaseSettings.Value));
         }
 
-        public DbSet<Company> Companies { get; set; }
-        public DbSet<DocumentType> DocumentTypes { get; set; }
-        public DbSet<CommercialSegment> ComercialSegments { get; set; }
-        public DbSet<CompanyId> CompanyIds { get; set; }
-        public DbSet<CommercialSegmentId> CommercialSegmentIds { get; set; }
+        public DbSet<ContentId> ContentIds { get; set; }
+        public DbSet<Content> Contents { get; set; }
 
 
         public async Task CommitAsync()

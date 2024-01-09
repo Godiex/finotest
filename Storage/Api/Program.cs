@@ -21,7 +21,7 @@ builder.Services.AddHealthChecks();
 builder.Services.AddControllers(opts =>
 {
     opts.Filters.Add(typeof(AppExceptionFilterAttribute));
-    //opts.Filters.Add(typeof(GlobalValidateModelAttribute));
+    opts.Filters.Add(typeof(GlobalValidateModelAttribute));
 });
 builder.Services.AddInfrastructure(config, builder.Environment);
 

@@ -2,17 +2,18 @@ using Domain.Enums;
 
 namespace Domain.Entities;
 
-public class Item : EntityBase<Guid>, IAggregateRoot
+public class Item
 {
     public int Index { get; set; }
     public BehaviorType Behavior { get; set; }
-    public List<string>? Multimedia { get; set; }
-    public List<string>? Languages { get; set; }
+    public List<DynamicContent> Contents { get; set; }
 
-    public Item(Guid id, string name, string description)
+    public Item(int index, BehaviorType behavior, List<DynamicContent> contents)
     {
-        Id = id;
-        Name = name;
-        Description = description;
+        Index = index;
+        Behavior = behavior;
+        Contents = contents;
     }
+
+    public Item() { }
 }

@@ -43,7 +43,7 @@
     <PropertyGroup>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <NoWarn>$(NoWarn);1591</NoWarn>
-        <UserSecretsId>0f44daf2-80be-43c8-9fe4-85bc24254f2e</UserSecretsId>
+        <UserSecretsId>af39b2e3-798d-4803-829c-b6c5d4f98cf7</UserSecretsId>
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
         <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
     </PropertyGroup>

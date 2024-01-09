@@ -20,12 +20,6 @@
     <data name="ResourceNotFoundException" xml:space="preserve">
         <value>Not found the resource {0}</value>
     </data>
-    <data name="InvalidEmailException" xml:space="preserve">
-        <value>The email is not valid</value>
-    </data>
-    <data name="InvalidHostException" xml:space="preserve">
-        <value>The host entre is not valid</value>
-    </data>
     <data name="IdMismatchException" xml:space="preserve">
         <value>The provided ID in the route does not match the ID in the request body</value>
     </data>

@@ -2,6 +2,5 @@
 
 public static class SchemaNames
 {
-    public const string Config = "Config";
-    public const string Company = "Company";
+    public const string Content = "Content";
 }

@@ -65,6 +65,12 @@ public abstract class ReadRepositoryBase<T> : IReadRepository<T> where T : class
 
     return specification.PostProcessingAction == null ? queryResult : specification.PostProcessingAction(queryResult).ToList();
   }
+  
+  public virtual async Task<List<TResult>> PaginateAsync<TResult>(ISpecification<T, TResult> specification, int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+  {
+    return (await ListAsync(specification, cancellationToken)).Skip((pageNumber - 1) * pageSize)
+      .Take(pageSize).ToList();
+  }
     
   public virtual async Task<int> CountAsync(ISpecification<T> specification, CancellationToken cancellationToken = default)
   {

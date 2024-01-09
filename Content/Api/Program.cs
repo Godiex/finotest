@@ -12,10 +12,6 @@ if (builder.Environment.IsEnvironment(ApiConstants.LocalEnviroment))
 {
     config.AddUserSecrets<Program>();
 }
-else
-{
-    config.AddEnvironmentVariables();
-}
 builder.Services.AddLocalizationMessages();
 builder.Services.Configure<DatabaseSettings>(config.GetSection(nameof(DatabaseSettings)));
 var settings = config.GetSection(nameof(DatabaseSettings)).Get<DatabaseSettings>();
@@ -23,7 +19,7 @@ builder.Services.AddHealthChecks().AddSqlServer(settings.ConnectionString);
 builder.Services.AddControllers(opts =>
 {
     opts.Filters.Add(typeof(AppExceptionFilterAttribute));
-    opts.Filters.Add(typeof(GlobalValidateModelAttribute));
+    //opts.Filters.Add(typeof(GlobalValidateModelAttribute));
 });
 builder.Services.AddInfrastructure(config, builder.Environment);
 
@@ -41,7 +37,6 @@ app.UseRouting().UseHttpMetrics().UseEndpoints(endpoints =>
 {
     endpoints.MapMetrics();
     endpoints.MapHealthChecks("/health");
-    endpoints.MapGraphQL();
 });
 app.UseHttpLogging();
 app.UseHttpsRedirection();
