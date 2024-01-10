@@ -1,78 +1,48 @@
 openapi: 3.0.3
+servers:
+  # Added by API Auto Mocking Plugin
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/davilla/Content/1.0.0
+  - description: The API server
+    url: http://localhost:5101/api/v1
 info:
-  title: Swagger Company - OpenAPI 3.0
-  description: |-
-    This is the Company microservice documentation, based on OpenAPI 3.0 specification. 
+  description: This is the Content microservice documentation, based on OpenAPI 3.0 specification.
+  version: "1.0.0"
+  title: Swagger Content - OpenAPI 3.0
   contact:
     email: heider.galvis@palm.com.co
+    name: Developer
   license:
     name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
-  version: 1.0.0
-servers:
-  - url: http://localhost:5001/api/v1
-    description: The API server
+    url: 'https://www.apache.org/licenses/LICENSE-2.0.html'
+tags:
+  - name: Content
+    description: Operations associate with the content
 
 paths:
-  /companies:
+  /contents:
     post:
-      summary: Create Company Id
+      summary: Create Content Id
       tags:
-        - Company
-      operationId: createCompanyId
-      security:
-        - bearerAuth: []
+        - Content
+      operationId: CreateContentId
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CompanyIdSchema'
+                $ref: '#/components/schemas/createContentIdDtoSchema'
         '401':
           description: Unauthorized
-    get:
-      summary: Get All Companies
-      tags:
-        - Company
-      operationId: getAllPaginatedCompanies
-      parameters:
-        - name: pageNumber
-          in: query
-          schema:
-            type: integer
-            format: int32
-            default: 1
-        - name: pageSize
-          in: query
-          schema:
-            type: integer
-            format: int32
-            default: 5
-        - name: filter
-          in: query
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Success
-          content:
-            text/plain:
-              schema:
-                $ref: '#/components/schemas/PaginationResponseSchema'
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginationResponseSchema'
-            text/json:
-              schema:
-                $ref: '#/components/schemas/PaginationResponseSchema'
-  
-  /companies/{id}:
+      description: Create Content Id
+  /contents/{id}:
     put:
-      summary: Create Company
+      summary: Create Content
       tags:
-        - Company
-      operationId: createCompany
+        - Content
+      operationId: CreateContent
       parameters:
         - name: id
           in: path
@@ -84,7 +54,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CompanySchema'
+              $ref: '#/components/schemas/createContentSchema'
         required: true
       responses:
         '201':
@@ -105,340 +75,122 @@ paths:
           description: Unauthorized
         '406':
           description: Not Acceptable
-    
-    patch:
-      summary: Actualiza una empresa por ID
+    delete:
+      summary: Delete Content
       tags:
-        - Company
+        - Content
+      operationId: deleteContent
       parameters:
         - name: id
           in: path
           required: true
           schema:
-            type: string
-          description: ID de la empresa a actualizar
-      requestBody:
-        description: Datos de la empresa a actualizar
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CompanyUpdateSchema'
-      responses:
-        '204':
-          description: Actualización exitosa
-        '400':
-          description: Solicitud incorrecta
-        '404':
-          description: Empresa no encontrada
-
-  /commercial-segments:
-    get:
-      summary: Get All Commercial Segments
-      tags:
-        - CommercialSegment
-      operationId: getAllCommercialSegments
-      security:
-        - bearerAuth: []
+            $ref: '#/components/schemas/IdSchema'
       responses:
         '200':
           description: OK
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
           content:
             application/json:
               schema:
+                $ref: '#/components/schemas/NotFound'
+components:
+  schemas:
+    createContentSchema:
+      type: object
+      properties:
+        tag:
+          type: string
+          example: "Camisa cuello blanco"
+        logoUrl:
+          type: string
+          format: uri
+          example: "https://i.ibb.co/mcDzV9g/LOGO-TOGO.jpg"
+        multimedia:
+          type: array
+          items:
+            type: string
+            format: uri
+          example:
+            - "https://i.ibb.co/8YZsbWm/CAMISA-1.jpg"
+            - "https://i.ibb.co/z27qDFS/CAMISA-2.webp"
+        titleContent:
+          type: array
+          items:
+            type: object
+            properties:
+              code:
+                type: string
+                example: "es"
+              content:
+                type: string
+                example: "<strong> Last provided workwear :</strong> 04/10/2023 <strong> Workwears provided this year:</strong> 2"
+        styles:
+          type: object
+          properties:
+            background-color:
+              type: string
+              example: "white"
+            color:
+              type: string
+              example: "black"
+        languages:
+          type: array
+          items:
+            type: string
+          example:
+            - "es"
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              index:
+                type: integer
+                example: 0
+              behavior:
+                type: string
+                example: "WYSIWYG"
+              contents:
                 type: array
                 items:
-                  $ref: '#/components/schemas/CommercialSegmentSchema'
-        '401':
-          description: Unauthorized
-    post:
-      summary: Create Commercial Segment
-      tags:
-        - CommercialSegment
-      operationId: createCommercialSegmentId
-      requestBody:
-        description: Create a commercialSegmentId
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CommercialSegmentSchema'
-        required: true
-      responses:
-        '201':
-          description: Created
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BadRequest'
-        '401':
-          description: Unauthorized
-        '406':
-          description: Not Acceptable
-  /commercial-segments/{id}:
-    put:
-      summary: Create a Commercial Segment
-      tags:
-        - CommercialSegment
-      operationId: createCommercialSegment
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            $ref: '#/components/schemas/IdSchema'
-      requestBody:
-        description: Update a commercial segment
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CommercialSegmentSchema'
-        required: true
-      responses:
-        '200':
-          description: OK
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BadRequest'
-        '401':
-          description: Unauthorized
-        '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NotFound'
-    patch:
-      summary: Update Commercial Segment
-      tags:
-        - CommercialSegment
-      operationId: updateCommercialSegment
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            $ref: '#/components/schemas/IdSchema'
-      requestBody:
-        description: Update of a commercial segment
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CommercialSegmentSchema'
-        required: true
-      responses:
-        '200':
-          description: OK
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BadRequest'
-        '401':
-          description: Unauthorized
-        '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NotFound'
-    delete:
-      summary: Delete Commercial Segment
-      tags:
-        - CommercialSegment
-      operationId: deleteCommercialSegment
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            $ref: '#/components/schemas/IdSchema'
-      responses:
-        '200':
-          description: OK
-        '401':
-          description: Unauthorized
-        '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NotFound'
+                  type: object
+                  properties:
+                    code:
+                      type: string
+                      example: "es"
+                    label:
+                      type: string
+                      example: "Material"
+                    content:
+                      type: string
+                      example: "<strong> Last provided workwear :</strong> 04/10/2023 <strong> Workwears provided this year:</strong> 2"
 
-components:
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-
-  schemas:
-    IdSchema:
-      type: object
-      format: uuid
-      example: '3e8da1f1-bfac-423b-a77c-c86b23312345'
-
-    CompanyIdSchema:
-      type: object
-      required:
-        - companyId
-      properties:
-        companyId:
-          $ref: '#/components/schemas/IdSchema'
-
-    CompanySchema:
-      type: object
-      minProperties: 5
-      maxProperties: 5
-      required:
-        - name
-        - legalIdentifier
-        - commercialSegment
-        - hostname
-        - authorizedAgent
-      properties:
-        name:
-          type: string
-          pattern: ^([a-zA-ZÀ-ÖØ-öø-ÿ\s]{3,30})$
-          example: 'Togo'
-        legalIdentifier:
-          type: string
-          pattern: ^([a-zA-ZÀ-ÖØ-öø-ÿ\s]{3,30})$
-          example: '123456789'
-        commercialSegment:
-          allOf:
-            - $ref: '#/components/schemas/IdSchema'
-            - example: '3e8da1f1-bfac-423b-a77c-c86b23354321'
-        hostname:
-          type: string
-          format: hostname
-          example: 'togo.com'
-        authorizedAgent:
-          $ref: '#/components/schemas/AuthorizedAgentSchema'
-    
-    CompanyUpdateSchema:
-      type: object
-      properties:
-        name:
-          type: string
-          pattern: ^([a-zA-ZÀ-ÖØ-öø-ÿ\s]{3,30})$
-          example: 'Togo actualizado'
-        legalIdentifier:
-          type: string
-          pattern: ^([a-zA-ZÀ-ÖØ-öø-ÿ\s]{3,30})$
-          example: '123111111'
-        commercialSegment:
-          allOf:
-            - $ref: '#/components/schemas/IdSchema'
-            - example: '3e8da1f1-bfac-423b-a77c-c86b23354321'
-        hostname:
-          type: string
-          format: hostname
-          example: 'togoupdate.com'
-
-    CommercialSegmentSchema:
+    getContentSchema:
       type: object
       properties:
         id:
           $ref: '#/components/schemas/IdSchema'
         name:
           type: string
-          maxLength: 60
-          example: 'Segment Name'
-        description:
-          type: string
           maxLength: 200
-          example: 'This is a description of the commercial segment.'
-
-    AuthorizedAgentSchema:
+          example: Camisa manga larga
+    
+    createContentIdDtoSchema:
       type: object
-      minProperties: 4
-      maxProperties: 4
       required:
-        - name
-        - surname
-        - email
-        - identity
+        - contentId
       properties:
-        name:
-          type: string
-          pattern: ^([a-zA-ZÀ-ÖØ-öø-ÿ\s]{3,30})$
-          example: 'Maria'
-        surname:
-          type: string
-          pattern: ^([a-zA-ZÀ-ÖØ-öø-ÿ\s]{3,30})$
-          example: 'Reino'
-        email:
-          type: string
-          format: email
-          example: maria.reino@togo.com
-        identity:
-          oneOf:
-            - $ref: '#/components/schemas/ColombianIdentificationSchema'
-            - $ref: '#/components/schemas/MexicanIdentificationSchema'
-            - $ref: '#/components/schemas/USA_IdentificationSchema'
+        contentId:
+          $ref: '#/components/schemas/IdSchema'
 
-    ColombianIdentificationSchema:
+    IdSchema:
       type: object
-      minProperties: 2
-      maxProperties: 2
-      required:
-        - documentType
-        - legalIdentifier
-      properties:
-        documentType:
-          type: string
-          enum:
-            - CC
-            - CE
-          example: CC
-        legalIdentifier:
-          type: string
-          pattern: ^([a-zA-ZÀ-ÖØ-öø-ÿ\s]{3,30})$
-          example: '1234567'
-
-    MexicanIdentificationSchema:
-      type: object
-      minProperties: 2
-      maxProperties: 2
-      required:
-        - documentType
-        - legalIdentifier
-      properties:
-        documentType:
-          type: string
-          enum:
-            - CC
-            - CE
-          example: CE
-        legalIdentifier:
-          type: string
-          pattern: ^([a-zA-ZÀ-ÖØ-öø-ÿ\s]{3,30})$
-          example: '1234567-M'
-
-    USA_IdentificationSchema:
-      type: object
-      minProperties: 2
-      maxProperties: 2
-      required:
-        - documentType
-        - legalIdentifier
-      properties:
-        documentType:
-          type: string
-          enum:
-            - PP
-            - CE
-          example: PP
-        legalIdentifier:
-          type: string
-          pattern: ^([a-zA-ZÀ-ÖØ-öø-ÿ\s]{3,30})$
-          example: '1234567-USA'
+      format: uuid
+      example: '3e8da1f1-bfac-423b-a77c-c86b23312345'
 
     NotFound:
       type: object
@@ -450,107 +202,16 @@ components:
     BadRequest:
       type: object
       required:
-        - errors
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/BadRequestItem'
-
-    BadRequestItem:
-      type: object
-      required:
-        - path
-        - property
+        - code
         - message
-        - schema
-        - instance
-        - name
-        - argument
-        - stack
+        - error
       properties:
-        path:
-          type: array
-          items:
-            type: string
-          example: []
-        property:
+        code:
           type: string
-          example: 'instance'
+          example: "400"
         message:
           type: string
-          example: "requires property \"email\""
-        schema:
+          example: "the file is required"
+        error:
           type: string
-          example: '/LoginSchema'
-        instance:
-          type: object
-          example: "{}"
-        name:
-          type: string
-          example: 'required'
-        argument:
-          type: object
-          example: "email"
-        stack:
-          type: string
-          example: "instance requires property \"email\""
-    
-    PaginationResponseSchema:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/GetAllCompaniesDtoSchema'
-          nullable: true
-        currentPage:
-          type: integer
-          format: int32
-        totalPages:
-          type: integer
-          format: int32
-        totalCount:
-          type: integer
-          format: int32
-        pageSize:
-          type: integer
-          format: int32
-        hasPreviousPage:
-          type: boolean
-          readOnly: true
-        hasNextPage:
-          type: boolean
-          readOnly: true
-    
-    GetAllCompaniesDtoSchema:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          example: '4fa85f64-5717-1262-b3fc-2c963f66afa6'
-        name:
-          type: string
-          nullable: true
-          example: 'Togo'
-        legalIdentifier:
-          type: string
-          nullable: true
-          example: '8901135084'
-        hostname:
-          type: string
-          nullable: true
-          example: 'Togo.com'
-        commercialSegmentName:
-          type: string
-          nullable: true
-          example: 'Seguridad'
-        state:
-          $ref: '#/components/schemas/CompanyState'
-    
-    CompanyState:
-      type: string
-      enum:
-        - Active
-        - Inactive
+          example: 'BadRequestException'
