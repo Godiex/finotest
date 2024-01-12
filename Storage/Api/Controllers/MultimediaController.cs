@@ -12,8 +12,8 @@ public class MultimediaController : ControllerBase
 
     [HttpPost]
     [DisableRequestSizeLimit]
-    public async Task<UploadMultimediaDto> UploadMultimedia([FromForm] UploadMultimediaCommand command)
+    public async Task<UploadMultimediaDto> UploadMultimedia([FromForm] UploadMultimediaEntryCommand command)
     {
-        return await _mediator.Send(command);
+        return await _mediator.Send(new UploadMultimediaCommand(command.GetDataMessageDto()));
     }
 }

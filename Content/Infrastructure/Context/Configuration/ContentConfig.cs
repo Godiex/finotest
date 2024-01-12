@@ -58,13 +58,6 @@ public class ContentConfig : IEntityTypeConfiguration<Content>
                     c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
                     c => c.ToList()))
             .HasMaxLength(8000);
-        
-        builder
-            .Property(x => x.TitleContent)
-            .HasConversion(
-                v => JsonSerializer.Serialize(v, new JsonSerializerOptions()),
-                v => JsonSerializer.Deserialize<DynamicContent>(v, new JsonSerializerOptions()))
-            .HasMaxLength(1000);
 
     }
 }

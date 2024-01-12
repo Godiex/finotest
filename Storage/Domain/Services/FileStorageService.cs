@@ -10,8 +10,8 @@ public class FileStorageService
     public FileStorageService(IFileStorageRepository fileStorageRepository) =>
         _fileStorageRepository = fileStorageRepository;
 
-    public async Task<string> UploadAsync(byte[] fileData, string fileName)
+    public async Task<string> UploadAsync(byte[] fileData, string extencion)
     {
-        return await _fileStorageRepository.Upload(fileData, fileName);
+        return await _fileStorageRepository.Upload(fileData, $"{Guid.NewGuid()}{extencion}");
     }
 }

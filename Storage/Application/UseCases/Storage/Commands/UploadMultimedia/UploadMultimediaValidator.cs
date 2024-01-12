@@ -4,6 +4,5 @@ public class UploadMultimediaValidator : AbstractValidator<UploadMultimediaComma
 {
     public UploadMultimediaValidator()
     {
-        RuleFor(_ => _.Files).NotNull().NotEmpty();
     }
 }

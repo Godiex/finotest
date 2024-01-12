@@ -20,10 +20,9 @@ public class ContentController : ControllerBase
     }
 
     [HttpPut("{id:guid}")]
-    public async Task<IActionResult> CreateContent(Guid id, [FromBody] CreateContentCommand command)
+    public async Task<IActionResult> CreateContent(Guid id, [FromForm] CreateContentEntryCommand command)
     {
-        command.Id = id;
-        await _mediator.Send(command);
+        await _mediator.Send(new CreateContentCommand(id, command));
         return Accepted();
     }
 

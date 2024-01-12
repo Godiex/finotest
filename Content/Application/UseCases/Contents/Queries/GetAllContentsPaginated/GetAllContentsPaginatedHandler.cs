@@ -15,6 +15,8 @@ public class GetAllContentsPaginatedHandler : IRequestHandler<GetAllContentsPagi
 
     public async Task<PaginationResponse<GetAllContentsPaginatedDto>> Handle(GetAllContentsPaginatedQuery query, CancellationToken cancellationToken)
     {
+        var espe = new GetAll2ContentsPaginatedSpec(query.Filter);
+        var a = await _repository.ListAsync(espe, cancellationToken);
         var spec = new GetAllContentsPaginatedSpec(query.Filter);
         return await _repository.PaginatedListAsync(spec, query.PageNumber, query.PageSize, cancellationToken);
     }

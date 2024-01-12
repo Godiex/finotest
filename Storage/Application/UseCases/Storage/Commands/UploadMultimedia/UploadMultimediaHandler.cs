@@ -1,55 +1,40 @@
+using Application.Common.Dto;
 using Domain;
+using Domain.Entities;
 using Domain.Exceptions.Common;
+using Domain.Ports;
 using Domain.Services;
-using Microsoft.AspNetCore.Http;
 
 namespace Application.UseCases.Storage.Commands.UploadMultimedia
 {
     public class UploadMultimediaHandler : IRequestHandler<UploadMultimediaCommand, UploadMultimediaDto>
     {
+        private readonly IMultimediaMessagePublisher _messagePublisher;
         private readonly FileStorageService _fileStorageService;
         private const long MaxFileSize = 20 * 1024 * 1024;
 
-        public UploadMultimediaHandler(FileStorageService fileStorageService)
+        public UploadMultimediaHandler(FileStorageService fileStorageService, IMultimediaMessagePublisher messagePublisher)
         {
             _fileStorageService = fileStorageService ?? throw new ArgumentNullException(nameof(fileStorageService));
+            _messagePublisher = messagePublisher;
         }
 
         public async Task<UploadMultimediaDto> Handle(UploadMultimediaCommand request, CancellationToken cancellationToken)
         {
-            foreach (var file in request.Files)
+            if (request.FilesMetadata.Files.Any(file => file.Size > MaxFileSize))
             {
-                if (file.Length <= MaxFileSize) continue;
-                var message = string.Format(Messages.InvalidFileSizeException, file.FileName,
-                    MaxFileSize / (1024 * 1024));
+                var message = string.Format(Messages.InvalidFileSizeException, MaxFileSize / (1024 * 1024));
                 throw new InvalidFileSizeException(message);
             }
             
-            var multimediaUrls = await Task.WhenAll(request.Files.Select(file =>
-                ProcessFileAsync(file, cancellationToken)));
-
-            return new UploadMultimediaDto(multimediaUrls.ToList());
-        }
-
-        private async Task<string> ProcessFileAsync(IFormFile file, CancellationToken cancellationToken)
-        {
-            using var memoryStream = new MemoryStream();
-            await file.CopyToAsync(memoryStream, cancellationToken);
-
-            var extension = GetFileExtension(file);
-            var fileName = GenerateUniqueFileNameWithExtension(extension);
-            
-            return await _fileStorageService.UploadAsync(memoryStream.ToArray(), fileName);
-        }
-
-        private static string GetFileExtension(IFormFile file)
-        {
-            return Path.GetExtension(file.FileName);
-        }
-
-        private static string GenerateUniqueFileNameWithExtension(string extension)
-        {
-            return $"{Guid.NewGuid()}{extension}";
+            string[] multimediaUrls = await Task.WhenAll(request.FilesMetadata.Files.Select(file =>
+                _fileStorageService.UploadAsync(file.Data, file.Extension)));
+            var messagePublisher = new MessageResponsePublisherDto<string[]>(multimediaUrls);
+            await _messagePublisher.CreateQueueSender(request.FilesMetadata.Subscription);
+            var messageToPublish = new MessageEnvelope<MessageResponsePublisherDto<string[]>>(messagePublisher);
+            messageToPublish.SetSubscription(request.FilesMetadata.Subscription);
+            await _messagePublisher.SendMessageAsync(messageToPublish, cancellationToken);
+            return new UploadMultimediaDto(multimediaUrls.ToArray());
         }
     }
 }

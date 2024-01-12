@@ -5,7 +5,7 @@ namespace Domain.Enums
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum ContentType
     {
-        SECTION,
+        ACCORDION_DETAIL,
         PLANE_TEXT,
     }
 

@@ -28,6 +28,6 @@
         <value>La solicitud contiene errores: {0}</value>
     </data>
     <data name="InvalidFileSizeException" xml:space="preserve">
-        <value>El archivo {0} excede el tamaño máximo permitido de {1} MB.</value>
+        <value>El archivo excede el tamaño máximo permitido de {1} MB.</value>
     </data>
 </root>

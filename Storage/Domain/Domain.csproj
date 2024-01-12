@@ -27,11 +27,8 @@
 
     <ItemGroup>
       <EmbeddedResource Remove="Messages.resx" />
+      <PackageReference Include="System.Memory.Data" Version="8.0.0" />
       <Resource Include="Messages.resx" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Entities\Validators\" />
     </ItemGroup>
 
 </Project>

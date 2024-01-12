@@ -9,51 +9,37 @@ public class CreateContentValidator : AbstractValidator<CreateContentCommand>
         {
             RuleFor(c => c.Languages).NotEmpty();
         });
-        When(c => c.Multimedia is not null, () =>
+        When(c => c.Carousel is not null, () =>
         {
-            RuleFor(c => c.Multimedia).NotEmpty();
+            RuleFor(c => c.Carousel).NotEmpty();
         });
-        When(c => c.LogoUrl is not null, () =>
+        When(c => c.Contents is not null, () =>
         {
-            RuleFor(c => c.LogoUrl).NotEmpty().MinimumLength(3).MaximumLength(250);
-        });
-        When(c => c.TitleContent is not null, () =>
-        {
-            RuleForEach(c => c.TitleContent).NotEmpty().SetValidator(new TextCommandValidator());
-        });
-        When(c => c.Items is not null, () =>
-        {
-            RuleForEach(c => c.Items).NotEmpty().SetValidator(new ItemCommandValidator());
+            RuleForEach(c => c.Contents).NotEmpty();
         });
     }
 }
 
 
-public class ItemCommandValidator : AbstractValidator<ItemCommand>
+public class ItemCommandValidator : AbstractValidator<AccordionDetailCommand>
 {
     public ItemCommandValidator()
     {
         RuleFor(item => item.Index).NotNull();
         RuleFor(item => item.Behavior).NotNull();
-        RuleForEach(item => item.Contents).SetValidator(new SectionContentCommandValidator());
+        RuleForEach(item => item.Data).NotNull();
     }
 }
 
-public class SectionContentCommandValidator : AbstractValidator<SectionContentCommand>
+public class DetailCommandValidator : AbstractValidator<AccordionDetailCommand>
 {
-    public SectionContentCommandValidator()
+    public DetailCommandValidator()
     {
-        RuleFor(itemContent => itemContent.Code).NotNull();
-        RuleFor(itemContent => itemContent.Label).NotNull();
-        RuleFor(itemContent => itemContent.Content).NotNull();
-    }
-}
-
-public class TextCommandValidator : AbstractValidator<TextCommand>
-{
-    public TextCommandValidator()
-    {
-        RuleFor(itemContent => itemContent.Code).NotNull();
-        RuleFor(itemContent => itemContent.Content).NotNull();
+        RuleFor(itemContent => itemContent.Behavior).NotNull();
+        RuleFor(itemContent => itemContent.Data).NotNull();
+        When(c => c.Label is not null, () =>
+        {
+            RuleFor(c => c.Label).NotEmpty();
+        });
     }
 }

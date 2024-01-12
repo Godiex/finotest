@@ -15,3 +15,16 @@ public class GetAllContentsPaginatedSpec : Specification<Content, GetAllContents
         Query.OrderByDescending(content => content.CreatedOn);
     }
 }
+
+public class GetAll2ContentsPaginatedSpec : Specification<Content>
+{
+    public GetAll2ContentsPaginatedSpec(string filter)
+    {
+        if (!string.IsNullOrEmpty(filter))
+        {
+            Query.Where(content => content.Tag.Contains(filter));
+        }
+
+        Query.OrderByDescending(content => content.CreatedOn);
+    }
+}

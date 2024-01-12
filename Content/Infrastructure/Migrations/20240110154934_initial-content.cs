@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Infrastructure.Migrations
 {
-    public partial class initalcontentdatabase : Migration
+    public partial class initialcontent : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -25,7 +25,6 @@ namespace Infrastructure.Migrations
                     LogoUrl = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
                     Multimedia = table.Column<string>(type: "nvarchar(max)", maxLength: 5000, nullable: true),
                     Languages = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    TitleContent = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     Items = table.Column<string>(type: "nvarchar(max)", maxLength: 8000, nullable: true),
                     DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),

@@ -21,6 +21,6 @@
         <value>the request contain errors {0}</value>
     </data>
     <data name="InvalidFileSizeException" xml:space="preserve">
-        <value>File {0} exceeds the maximum allowed size of {1} MB.</value>
+        <value>File exceeds the maximum allowed size of {1} MB.</value>
     </data>
 </root>

@@ -1,38 +1,91 @@
-using System.Text.Json.Serialization;
+using Domain.Entities;
+using Domain.Entities.ValueObjects;
 using Domain.Enums;
+using Microsoft.AspNetCore.Http;
+
 
 namespace Application.UseCases.Contents.Commands.CreateContent;
 
 public record CreateContentCommand : IRequest<Unit>
 {
-    public CreateContentCommand(Guid id, string tag, string? logoUrl, List<string>? multimedia, List<TextCommand>? titleContent, StylesCommand? styles, List<string>? languages, List<ItemCommand>? items)
+    public CreateContentCommand(
+        Guid id,
+        CreateContentEntryCommand commandEntry
+    )
     {
         Id = id;
-        Tag = tag;
-        LogoUrl = logoUrl;
-        Multimedia = multimedia;
-        TitleContent = titleContent;
-        Styles = styles;
-        Languages = languages;
-        Items = items;
+        Tag = commandEntry.Tag;
+        Logo = commandEntry.Logo;
+        Carousel = commandEntry.Carousel;
+        Styles = commandEntry.Styles;
+        Languages = commandEntry.Languages;
+        Contents = commandEntry.Contents;
     }
 
-    [JsonIgnore]
     public Guid Id { get; set; }
     public string Tag { get; set; }
-    public string? LogoUrl { get; set; }
-    public List<string>? Multimedia { get; set; }
-    public List<TextCommand>? TitleContent { get; set; }
+    public IFormFile? Logo { get; set; }
+    public List<IFormFile>? Carousel { get; set; }
     public StylesCommand? Styles { get; set; }
     public List<string>? Languages { get; set; }
-    public List<ItemCommand>? Items { get; set; }
+    public List<ContentCommand>? Contents { get; set; }
+    
+    public static Content MapCommandToEntity(CreateContentCommand request, string? logoUrl, string[]? carouselUrls)
+    {
+        return new Content(
+            request.Tag,
+            logoUrl,
+            carouselUrls?.ToList(),
+            request.Languages,
+            request.Contents?.ConvertAll(
+                MapItem
+            )
+        );
+    }
+    
+    private static Item MapItem(ContentCommand x)
+    {
+        return new Item(
+            x.LanguageIndex, x.Title, x.Details.ConvertAll(
+                section => new DynamicContent(
+                    ContentType.ACCORDION_DETAIL,
+                    new AccordionDetail(section.Index, section.Behavior, section.Label, section.Data))
+            )
+        );
+    }
 }
 
-public record SectionContentCommand(string Code, string Label, string Content);
+public record CreateContentEntryCommand
+{
+    public CreateContentEntryCommand() { }
+    public CreateContentEntryCommand(
+        string tag,
+        IFormFile? logo,
+        List<IFormFile>? carousel,
+        List<ContentCommand>? contents,
+        StylesCommand? styles,
+        List<string>? languages
+    )
+    {
+        Tag = tag;
+        Logo = logo;
+        Carousel = carousel;
+        Styles = styles;
+        Languages = languages;
+        Contents = contents;
+    }
+    
+    public string Tag { get; set; }
+    public IFormFile? Logo { get; set; }
+    public List<IFormFile>? Carousel { get; set; }
+    public StylesCommand? Styles { get; set; }
+    public List<string>? Languages { get; set; }
+    public List<ContentCommand>? Contents { get; set; }
+}
 
-public record TextCommand(string Code, string Content);
+public record ContentCommand(int LanguageIndex, string? Title, List<AccordionDetailCommand> Details);
 
-public record ItemCommand(int Index, BehaviorType Behavior, List<SectionContentCommand> Contents);
+public record AccordionDetailCommand(int Index, BehaviorType Behavior, string? Label, string Data);
 
-public record StylesCommand(string BackgroundColor, string Color);
+public record StylesCommand(string? BackgroundColor, string? Color);
 

@@ -1,8 +1,9 @@
+using Application;
 using Infrastructure.Context;
 using Infrastructure.Extensions.Cors;
 using Infrastructure.Extensions.Logs;
-using Infrastructure.Extensions.Mapper;
 using Infrastructure.Extensions.Mediator;
+using Infrastructure.Extensions.Message;
 using Infrastructure.Extensions.OpenApi;
 using Infrastructure.Extensions.Persistence;
 using Infrastructure.Extensions.Service;
@@ -19,11 +20,12 @@ public static class Startup
 {
     public static void AddInfrastructure(this IServiceCollection services, IConfiguration config, IWebHostEnvironment env)
     {
+        MapsterSettings.Configure();
         services
             .AddOpenApiDocumentation(env)
             .AddValidation()
             .AddMediator()
-            .AddMapper()
+            .AddMessaging(config)
             .AddPersistence(config)
             .AddCorsPolicy(config)
             .AddLogger()
