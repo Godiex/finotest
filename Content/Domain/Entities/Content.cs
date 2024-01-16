@@ -11,6 +11,22 @@ public class Content : EntityBase<Guid>, IAggregateRoot
     public Content() { }
 
     public Content(
+        Guid id,
+        string tag,
+        string? logoUrl = null,
+        List<string>? multimedia = null,
+        List<string>? languages = null,
+        List<Item>? items = null)
+    {
+        Id = id;
+        Tag = tag;
+        LogoUrl = logoUrl;
+        Multimedia = multimedia;
+        Languages = languages;
+        Items = items;
+    }
+
+    public void Update(
         string tag,
         string? logoUrl = null,
         List<string>? multimedia = null,

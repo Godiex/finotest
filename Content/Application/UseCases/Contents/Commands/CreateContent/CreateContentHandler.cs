@@ -4,6 +4,7 @@ using Application.Common.Exceptions;
 using Application.Ports.Messaging;
 using Domain.Entities;
 using Domain.Entities.Idempotency;
+using Domain.Exceptions.Common;
 using Domain.Ports;
 using Domain.Services;
 using Microsoft.AspNetCore.Http;
@@ -35,8 +36,18 @@ public class CreateContentHandler : IRequestHandler<CreateContentCommand>
 
     public async Task<Unit> Handle(CreateContentCommand request, CancellationToken cancellationToken)
     {
-        await _contentIdIdRepository.ValidateEntityId(request.Id);
-        await _contentIdIdRepository.RemoveAsync(request.Id);
+        Content? contentSearched = null;
+        try
+        {
+            contentSearched = await _contentService.GetContentById(request.Id);
+            await _contentService.ValidateTagToUpdate(contentSearched.Tag, request.Tag);
+        }
+        catch (ResourceNotFoundException e)
+        {
+            await _contentIdIdRepository.ValidateEntityId(request.Id);
+            await _contentIdIdRepository.RemoveAsync(request.Id);
+        }
+        
         if (request.Carousel != null)
         {
             await ProcessMultimediaAsync(request.Carousel, ProcessMessageCarouselAsync, cancellationToken);
@@ -48,7 +59,17 @@ public class CreateContentHandler : IRequestHandler<CreateContentCommand>
         }
         
         Content content = CreateContentCommand.MapCommandToEntity(request, LogoUrl, CarouselUrl);
-        await _contentService.CreateAsync(content);
+
+        if (contentSearched != null)
+        {
+            contentSearched.Update(content.Tag, content.LogoUrl, content.Multimedia, content.Languages, content.Items);
+            await _contentService.UpdateAsync(contentSearched);
+        }
+        else
+        {
+            await _contentService.CreateAsync(content);
+        }
+        
         return new Unit();
     }
 

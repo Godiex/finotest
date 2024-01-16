@@ -33,6 +33,7 @@ public record CreateContentCommand : IRequest<Unit>
     public static Content MapCommandToEntity(CreateContentCommand request, string? logoUrl, string[]? carouselUrls)
     {
         return new Content(
+            request.Id,
             request.Tag,
             logoUrl,
             carouselUrls?.ToList(),

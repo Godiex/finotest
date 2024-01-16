@@ -1,6 +1,6 @@
 ﻿namespace Application.UseCases.Contents.Commands.CreateContent;
 
-public class CreateContentValidator : AbstractValidator<CreateContentCommand>
+public class CreateContentValidator : AbstractValidator<CreateContentEntryCommand>
 {
     public CreateContentValidator()
     {

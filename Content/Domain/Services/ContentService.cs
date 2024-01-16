@@ -22,19 +22,33 @@ public class ContentService
         var content = await GetContentById(id);
         await _contentRepository.DeleteAsync(content);
     }
-    private async Task<Content> GetContentById(Guid id)
+
+    public async Task UpdateAsync(Content content)
+    {
+        await _contentRepository.UpdateAsync(content);
+    }
+
+    public async Task ValidateTagToUpdate(string tag, string tagToUpdate)
+    {
+        if (tag != tagToUpdate)
+        {
+            await ValidateExistingTag(tagToUpdate);
+        }
+    }
+    public async Task<Content> GetContentById(Guid id)
     {
         var content = await _contentRepository.GetByIdAsync(id);
         _ = content ??
             throw new ResourceNotFoundException(string.Format(Messages.ResourceNotFoundException, nameof(id), id));
         return content;
     }
+
     private async Task ValidateExistingTag(string tag)
     {
-        var existTag = await _contentRepository.Exist(content => content.Tag == tag);
+        bool existTag = await _contentRepository.Exist(content => content.Tag == tag);
         if (existTag)
         {
-            var message = string.Format(Messages.AlredyExistException, nameof(tag), tag);
+            string message = string.Format(Messages.AlredyExistException, nameof(tag), tag);
             throw new ResourceAlreadyExistException(message);
         }
     }
