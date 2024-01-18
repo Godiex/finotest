@@ -136,6 +136,6 @@ public class CreateContentHandler : IRequestHandler<CreateContentCommand>
         formFile.CopyTo(memoryStream);
         string extension = Path.GetExtension(formFile.FileName);
         byte[] data = memoryStream.ToArray();
-        return new FileDataDto(extension, data, formFile.Length);
+        return new FileDataDto(extension, data, formFile.Length, formFile.ContentType);
     }
 }

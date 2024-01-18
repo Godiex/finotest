@@ -1,4 +1,5 @@
 using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 using Domain.Ports;
 using Infrastructure.Extensions.Storage;
 using Microsoft.AspNetCore.StaticFiles;
@@ -15,36 +16,18 @@ public class FileStorageRepository : IFileStorageRepository
         _storageSettings = configuration.GetSection(nameof(StorageSettings)).Get<StorageSettings>();
     }
     
-    public async Task<string> Upload(byte[] fileData, string fileName)
+    public async Task<string> Upload(byte[] fileData, string extencion, string contentType)
     {
-        var a = GetFileExtension(fileData);
         BlobContainerClient containerClient = new(_storageSettings.ConnectionString, _storageSettings.Container);
-        var blobClient = containerClient.GetBlobClient(fileName);
+        var blobClient = containerClient.GetBlobClient($"{Guid.NewGuid()}{extencion}");
         using var fileStream = new MemoryStream(fileData);
-        await blobClient.UploadAsync(fileStream, true).ConfigureAwait(false);
+        BlobUploadOptions blobUploadOptions = new BlobUploadOptions
+        {
+            HttpHeaders = new BlobHttpHeaders { ContentType = contentType }
+        };
+        await blobClient.UploadAsync(fileStream, blobUploadOptions).ConfigureAwait(false);
         fileStream.Close();
         return blobClient.Uri.ToString();
-    }
-    
-    public string GetFileExtension(byte[] fileBytes)
-    {
-        var provider = new FileExtensionContentTypeProvider();
-        string fileExtension;
-
-        // Proporcionar un nombre de archivo ficticio
-        var fileName = "tempfile";
-        
-        // Intentar obtener la extensión a partir del contenido del archivo
-        if (provider.TryGetContentType(fileName, out string contentType))
-        {
-            provider.Mappings.TryGetValue(contentType, out fileExtension);
-        }
-        else
-        {
-            fileExtension = ".bin"; // Extensión predeterminada si no se puede determinar
-        }
-
-        return fileExtension;
     }
 
     public Task Update(string fileUrl, byte[] newFile)

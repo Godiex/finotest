@@ -28,7 +28,7 @@ namespace Application.UseCases.Storage.Commands.UploadMultimedia
             }
             
             string[] multimediaUrls = await Task.WhenAll(request.FilesMetadata.Files.Select(file =>
-                _fileStorageService.UploadAsync(file.Data, file.Extension)));
+                _fileStorageService.UploadAsync(file.Data, file.Extension, file.ContentType)));
             var messagePublisher = new MessageResponsePublisherDto<string[]>(multimediaUrls);
             await _messagePublisher.CreateQueueSender(request.FilesMetadata.Subscription);
             var messageToPublish = new MessageEnvelope<MessageResponsePublisherDto<string[]>>(messagePublisher);
