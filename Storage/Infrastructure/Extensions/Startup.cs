@@ -2,6 +2,7 @@ using Infrastructure.Extensions.Cors;
 using Infrastructure.Extensions.Logs;
 using Infrastructure.Extensions.Mapper;
 using Infrastructure.Extensions.Mediator;
+using Infrastructure.Extensions.Message;
 using Infrastructure.Extensions.OpenApi;
 using Infrastructure.Extensions.Service;
 using Infrastructure.Extensions.Storage;
@@ -25,6 +26,7 @@ public static class Startup
             .AddMapper()
             .AddCorsPolicy(config)
             .AddLogger()
+            .AddMessaging(config)
             .AddDomainServices();
     }
 

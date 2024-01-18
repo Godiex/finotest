@@ -66,7 +66,6 @@ public class ServiceBusMessageConsumer<T> : IMessageConsumer<T> where T : class
 
     private async Task HandleMessageAsync(ProcessMessageEventArgs processMessageEventArgs)
     {
-      _logger.LogInformation("sigo aca jodiendooooooooooooooooooooooo Zxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
       using (_logger.BeginScope<Dictionary<string, object>>(new Dictionary<string, object>()
       {
         ["Subject"] = (object) processMessageEventArgs.Message.Subject,
