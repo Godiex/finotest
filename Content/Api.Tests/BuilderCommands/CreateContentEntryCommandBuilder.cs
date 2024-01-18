@@ -17,6 +17,15 @@ public class CreateContentEntryCommandBuilder
         _tag = tag;
         return this;
     }
+    public CreateContentEntryCommandBuilder WithDefaultLogo()
+    {
+        
+       
+        var defaultLogoContent = new byte[] { 1, 2, 3 }; 
+        _logo = new FormFile(new MemoryStream(defaultLogoContent), 0, defaultLogoContent.Length, "defaultLogo", "defaultLogo.jpg");
+
+        return this;
+    }
     
     public CreateContentEntryCommand Build()
     {

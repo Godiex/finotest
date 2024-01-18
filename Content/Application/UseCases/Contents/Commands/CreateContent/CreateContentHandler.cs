@@ -76,7 +76,9 @@ public class CreateContentHandler : IRequestHandler<CreateContentCommand>
     private async Task ProcessMultimediaAsync(IEnumerable<IFormFile> files, Func<MessageEnvelope<BinaryData>, CancellationToken, Task> processMessageFunc, CancellationToken cancellationToken)
     {
         _completionSource = new TaskCompletionSource<bool>();
+        
         var messageId = await SendMessageMultimedia(files, cancellationToken);
+        
         await _multimediaMessagePublisher.CreateQueue(messageId, cancellationToken);
         _messageConsumer.SetQueue(messageId);
         _messageConsumer.ProcessMessageAsync += processMessageFunc;

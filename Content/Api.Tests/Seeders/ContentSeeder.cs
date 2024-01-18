@@ -13,7 +13,7 @@ public class ContentSeeder: IDataSeeder
     }
     public void Seed()
     {
-        var commercialSegment = new ContentBuilder().WithTag("old tag").Build();
-        _contentRepository.AddAsync(commercialSegment).Wait();
+        var content = new ContentBuilder().WithTag("old tag").Build();
+        _contentRepository.AddAsync(content).Wait();
     }
 }

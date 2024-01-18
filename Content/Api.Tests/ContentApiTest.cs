@@ -8,6 +8,7 @@ using Application.UseCases.Contents.Commands.CreateContentId;
 using Application.UseCases.Contents.Queries.GetAllContentsPaginated;
 using Domain.Entities;
 using Domain.Ports;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Api.Tests;
@@ -53,6 +54,34 @@ public class ContentApiTest:IClassFixture<ApiApp>
         var formData = new MultipartFormDataContent();
         formData.Add(new StringContent(content.Tag), "tag");
 
+        // Act 
+        var responsePut = await _client.PutAsync($"{ApiRoutes.Content}/{responseId?.ContentId}", formData);
+
+        //Assert
+        
+        Assert.True(responsePut is not null);
+        Assert.Equal(HttpStatusCode.Accepted, responsePut.StatusCode);
+       
+    }
+    [Fact]
+    public async Task PutNewContentWithLogo_ShouldBeAccepted()
+    {
+        //Arrange
+        var response = await _client.PostAsJsonAsync(ApiRoutes.Content, new object());      
+        var responseId = JsonSerializer.Deserialize<CreateContentIdDto>(await response.Content.ReadAsStringAsync(), _deserializeOptions);
+        var content = new CreateContentEntryCommandBuilder().WithDefaultLogo().Build();
+        var formData = new MultipartFormDataContent();
+        formData.Add(new StringContent(content.Tag), "tag");
+        byte[] logoBytes;
+        using (var logoMemoryStream = new MemoryStream())
+        {
+            content.Logo.CopyTo(logoMemoryStream);
+            logoBytes = logoMemoryStream.ToArray();
+        }
+
+// Agregar el array de bytes al formulario
+        formData.Add(new ByteArrayContent(logoBytes), "logo", content.Logo.FileName);
+
 
         // Act 
         var responsePut = await _client.PutAsync($"{ApiRoutes.Content}/{responseId?.ContentId}", formData);
@@ -61,6 +90,28 @@ public class ContentApiTest:IClassFixture<ApiApp>
         
         Assert.True(responsePut is not null);
         Assert.Equal(HttpStatusCode.Accepted, responsePut.StatusCode);
+       
+    }
+    [Fact]
+    public async Task UpdateContent_ShouldBeAccepted()
+    {
+        //Arrange
+        var serviceCollection = _apiApp.GetServiceCollection();
+        using var scope = serviceCollection.CreateScope();
+        var repository = scope.ServiceProvider.GetRequiredService<IGenericRepository<Content>>();
+        var contentExist = (await repository.GetAsync()).FirstOrDefault();
+        var formData = new MultipartFormDataContent();
+        formData.Add(new StringContent("new tag"), "tag");
+
+
+        // Act 
+        var responsePut = await _client.PutAsync($"{ApiRoutes.Content}/{contentExist?.Id}", formData);
+
+        //Assert
+        var contentExistNow = (await repository.GetAsync()).FirstOrDefault();
+        Assert.True(responsePut is not null);
+        Assert.Equal(HttpStatusCode.Accepted, responsePut.StatusCode);
+        Assert.False(contentExistNow?.Tag.Equals(contentExist?.Tag));
 
     }
     [Fact]
@@ -96,11 +147,11 @@ public class ContentApiTest:IClassFixture<ApiApp>
         var client = webApp.CreateClient();
 
         //Act
-        var contentListPaginated = await client.GetFromJsonAsync<GetAllContentsPaginatedDto>(ApiRoutes.Content);
+        var contentListPaginated = await client.GetFromJsonAsync<PaginationResponse<GetAllContentsPaginatedDto>>(ApiRoutes.Content);
 
         //assert
         Assert.True(contentListPaginated != null);
-        Assert.IsType<GetAllContentsPaginatedDto>(contentListPaginated);
+        Assert.IsType<PaginationResponse<GetAllContentsPaginatedDto>>(contentListPaginated);
 
     }
     
