@@ -3,6 +3,7 @@ using Infrastructure.Adapters.Repository;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Serilog;
 
 namespace Infrastructure.Extensions.Storage;
 
@@ -21,11 +22,11 @@ public static class StorageExtensions
             });
 
             services.AddSingleton(typeof(IFileStorageRepository), typeof(FileStorageRepository));
-            return services;
         }
         catch (Exception e)
         {
-            
+            Log.Error($"Error to configure StorageSettings {e.Message}, {e}");
         }
+        return services;
     }
 }

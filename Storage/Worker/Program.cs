@@ -1,4 +1,5 @@
 using Infrastructure;
+using Infrastructure.Common;
 using Infrastructure.Extensions.Logs;
 using Infrastructure.Extensions.Mapper;
 using Infrastructure.Extensions.Mediator;
@@ -7,6 +8,7 @@ using Infrastructure.Extensions.Service;
 using Infrastructure.Extensions.Storage;
 using Workerw;
 
+StaticLogger.EnsureInitialized();
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 ConfigurationManager config = builder.Configuration;
 if (builder.Environment.IsEnvironment(ApiConstants.LocalEnviroment))
@@ -22,7 +24,6 @@ builder.Services.AddHealthChecks();
 builder.Services.AddStorage(config);
 builder.Services.AddMediator();
 builder.Services.AddMapper();
-builder.Services.AddLogger();
 builder.Services.AddDomainServices();
 builder.Services.AddMessaging(config);
 
