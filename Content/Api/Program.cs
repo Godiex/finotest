@@ -1,11 +1,14 @@
 using Api.Filters;
 using Infrastructure;
+using Infrastructure.Common;
 using Infrastructure.Extensions;
 using Infrastructure.Extensions.Localization;
 using Infrastructure.Extensions.Persistence;
 using Prometheus;
 using Serilog;
 
+StaticLogger.EnsureInitialized();
+Log.Information("Server Booting Up...");
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
 if (builder.Environment.IsEnvironment(ApiConstants.LocalEnviroment))
@@ -13,9 +16,7 @@ if (builder.Environment.IsEnvironment(ApiConstants.LocalEnviroment))
     config.AddUserSecrets<Program>();
 }
 builder.Services.AddLocalizationMessages();
-builder.Services.Configure<DatabaseSettings>(config.GetSection(nameof(DatabaseSettings)));
-var settings = config.GetSection(nameof(DatabaseSettings)).Get<DatabaseSettings>();
-builder.Services.AddHealthChecks().AddSqlServer(settings.ConnectionString);
+builder.Services.AddHealthChecks();
 builder.Services.AddControllers(opts =>
 {
     opts.Filters.Add(typeof(AppExceptionFilterAttribute));

@@ -1,0 +1,217 @@
+openapi: 3.0.3
+servers:
+  # Added by API Auto Mocking Plugin
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/davilla/Content/1.0.0
+  - description: The API server
+    url: http://localhost:5101/api/v1
+info:
+  description: This is the Content microservice documentation, based on OpenAPI 3.0 specification.
+  version: "1.0.0"
+  title: Swagger Content - OpenAPI 3.0
+  contact:
+    email: heider.galvis@palm.com.co
+    name: Developer
+  license:
+    name: Apache 2.0
+    url: 'https://www.apache.org/licenses/LICENSE-2.0.html'
+tags:
+  - name: Content
+    description: Operations associate with the content
+
+paths:
+  /contents:
+    post:
+      summary: Create Content Id
+      tags:
+        - Content
+      operationId: CreateContentId
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/createContentIdDtoSchema'
+        '401':
+          description: Unauthorized
+      description: Create Content Id
+  /contents/{id}:
+    put:
+      summary: Create Content
+      tags:
+        - Content
+      operationId: CreateContent
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/IdSchema'
+      requestBody:
+        description: Create a company
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createContentSchema'
+        required: true
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '401':
+          description: Unauthorized
+        '406':
+          description: Not Acceptable
+    delete:
+      summary: Delete Content
+      tags:
+        - Content
+      operationId: deleteContent
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/IdSchema'
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+components:
+  schemas:
+    createContentSchema:
+      type: object
+      properties:
+        tag:
+          type: string
+          example: "Camisa cuello blanco"
+        logoUrl:
+          type: string
+          format: uri
+          example: "https://i.ibb.co/mcDzV9g/LOGO-TOGO.jpg"
+        multimedia:
+          type: array
+          items:
+            type: string
+            format: uri
+          example:
+            - "https://i.ibb.co/8YZsbWm/CAMISA-1.jpg"
+            - "https://i.ibb.co/z27qDFS/CAMISA-2.webp"
+        titleContent:
+          type: array
+          items:
+            type: object
+            properties:
+              code:
+                type: string
+                example: "es"
+              content:
+                type: string
+                example: "<strong> Last provided workwear :</strong> 04/10/2023 <strong> Workwears provided this year:</strong> 2"
+        styles:
+          type: object
+          properties:
+            background-color:
+              type: string
+              example: "white"
+            color:
+              type: string
+              example: "black"
+        languages:
+          type: array
+          items:
+            type: string
+          example:
+            - "es"
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              index:
+                type: integer
+                example: 0
+              behavior:
+                type: string
+                example: "WYSIWYG"
+              contents:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    code:
+                      type: string
+                      example: "es"
+                    label:
+                      type: string
+                      example: "Material"
+                    content:
+                      type: string
+                      example: "<strong> Last provided workwear :</strong> 04/10/2023 <strong> Workwears provided this year:</strong> 2"
+
+    getContentSchema:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/IdSchema'
+        name:
+          type: string
+          maxLength: 200
+          example: Camisa manga larga
+    
+    createContentIdDtoSchema:
+      type: object
+      required:
+        - contentId
+      properties:
+        contentId:
+          $ref: '#/components/schemas/IdSchema'
+
+    IdSchema:
+      type: object
+      format: uuid
+      example: '3e8da1f1-bfac-423b-a77c-c86b23312345'
+
+    NotFound:
+      type: object
+      properties:
+        message:
+          type: string
+          example: 'Resource not found'
+
+    BadRequest:
+      type: object
+      required:
+        - code
+        - message
+        - error
+      properties:
+        code:
+          type: string
+          example: "400"
+        message:
+          type: string
+          example: "the file is required"
+        error:
+          type: string
+          example: 'BadRequestException'
