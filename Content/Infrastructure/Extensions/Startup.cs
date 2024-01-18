@@ -22,11 +22,11 @@ public static class Startup
     {
         MapsterSettings.Configure();
         services
+            .AddPersistence(config)
             .AddOpenApiDocumentation(env)
             .AddValidation()
             .AddMediator()
             .AddMessaging(config)
-            .AddPersistence(config)
             .AddCorsPolicy(config)
             .AddLogger()
             .AddRepositories(config)

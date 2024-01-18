@@ -12,7 +12,7 @@ public static class OpenApiDocumentationExtensions {
     public static IServiceCollection AddOpenApiDocumentation(this IServiceCollection svc, IWebHostEnvironment env) {
         return svc.AddSwaggerGen(o =>
         {
-            var openApiDocPath = Path.Combine(env.ContentRootPath, "Docs", "openapi.yaml");
+            var openApiDocPath = Path.Combine(env.ContentRootPath, "wwwroot", "openapi.yaml");
 
             // Carga manualmente el documento YAML
             var yamlDoc = File.ReadAllText(openApiDocPath);

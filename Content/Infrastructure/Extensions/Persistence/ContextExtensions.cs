@@ -8,12 +8,12 @@ namespace Infrastructure.Extensions.Persistence;
 public static class ContextExtensions
 {
     public static IServiceCollection AddPersistence(this IServiceCollection svc, IConfiguration config) {
-        var settings = config.GetSection(nameof(DatabaseSettings)).Get<DatabaseSettings>();
+        DatabaseSettings? settings = config.GetSection(nameof(DatabaseSettings)).Get<DatabaseSettings>();
         svc.AddDbContext<PersistenceContext>(opt =>
         {
-            opt.UseSqlServer(settings.ConnectionString, sqlopts =>
+            opt.UseSqlServer(settings?.ConnectionString ?? "DefaultText", sqlopts =>
             {
-                sqlopts.MigrationsHistoryTable(settings.MigrationsHistoryTable, settings.SchemaName);
+                sqlopts.MigrationsHistoryTable(settings?.MigrationsHistoryTable  ?? "DefaultText", settings?.SchemaName ?? "DefaultText");
             });
         });
         return svc;
