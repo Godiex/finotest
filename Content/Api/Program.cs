@@ -3,14 +3,13 @@ using Infrastructure;
 using Infrastructure.Common;
 using Infrastructure.Extensions;
 using Infrastructure.Extensions.Localization;
-using Infrastructure.Extensions.Persistence;
 using Prometheus;
 using Serilog;
 
 StaticLogger.EnsureInitialized();
 Log.Information("Server Booting Up...");
-var builder = WebApplication.CreateBuilder(args);
-var config = builder.Configuration;
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+ConfigurationManager config = builder.Configuration;
 if (builder.Environment.IsEnvironment(ApiConstants.LocalEnviroment))
 {
     config.AddUserSecrets<Program>();
@@ -30,7 +29,7 @@ Log.Logger = new LoggerConfiguration().Enrich.FromLogContext()
     .WriteTo.Console()
     .CreateLogger();
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 await app.InitializeDatabasesAsync();
 app.UseInfrastructure();
 app.UseLocalizationMessages();

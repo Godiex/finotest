@@ -7,8 +7,8 @@ using Infrastructure.Extensions.Service;
 using Infrastructure.Extensions.Storage;
 using Workerw;
 
-var builder = WebApplication.CreateBuilder(args);
-var config = builder.Configuration;
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+ConfigurationManager config = builder.Configuration;
 if (builder.Environment.IsEnvironment(ApiConstants.LocalEnviroment))
 {
     config.AddUserSecrets<Program>();
@@ -28,7 +28,7 @@ builder.Services.AddMessaging(config);
 
 builder.Services.AddHostedService<WorkerTest>();
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 app.UseRouting();
 app.UseEndpoints(endpoints =>
 {

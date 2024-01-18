@@ -10,15 +10,22 @@ public static class StorageExtensions
 {
     public static IServiceCollection AddStorage(this IServiceCollection services, IConfiguration config)
     {
-        services.Configure<StorageSettings>(config.GetSection(nameof(StorageSettings)));
-        services.Configure<FormOptions>(options =>
+        try
         {
-            options.ValueLengthLimit = int.MaxValue;
-            options.MultipartBodyLengthLimit = long.MaxValue; // Ajusta según tus necesidades
-            options.MemoryBufferThreshold = int.MaxValue; // Puedes ajustar este valor según tus necesidades
-        });
+            services.Configure<StorageSettings>(config.GetSection(nameof(StorageSettings)));
+            services.Configure<FormOptions>(options =>
+            {
+                options.ValueLengthLimit = int.MaxValue;
+                options.MultipartBodyLengthLimit = long.MaxValue; // Ajusta según tus necesidades
+                options.MemoryBufferThreshold = int.MaxValue; // Puedes ajustar este valor según tus necesidades
+            });
 
-        services.AddSingleton(typeof(IFileStorageRepository), typeof(FileStorageRepository));
-        return services;
+            services.AddSingleton(typeof(IFileStorageRepository), typeof(FileStorageRepository));
+            return services;
+        }
+        catch (Exception e)
+        {
+            
+        }
     }
 }
