@@ -23,13 +23,13 @@ public class CreateContentHandler : IRequestHandler<CreateContentCommand>
     
     public CreateContentHandler(
         ContentService service,
-        IIdempotencyRepository<ContentId, Guid> contentIdIdReponsitory,
+        IIdempotencyRepository<ContentId, Guid> contentIdIdRepository,
         IMultimediaMessagePublisher multimediaMessagePublisher,
         IMultimediaMessageConsumer messageConsumer
     )
     {
         _contentService = service ?? throw new ArgumentNullException(nameof(service));
-        _contentIdIdRepository = contentIdIdReponsitory ?? throw new ArgumentNullException(nameof(contentIdIdReponsitory));
+        _contentIdIdRepository = contentIdIdRepository ?? throw new ArgumentNullException(nameof(contentIdIdRepository));
         _multimediaMessagePublisher = multimediaMessagePublisher ?? throw new ArgumentNullException(nameof(multimediaMessagePublisher));
         _messageConsumer = messageConsumer;
     }

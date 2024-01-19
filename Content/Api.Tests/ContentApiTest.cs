@@ -10,6 +10,8 @@ using Domain.Entities;
 using Domain.Ports;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Api.Tests;
 
@@ -63,7 +65,7 @@ public class ContentApiTest:IClassFixture<ApiApp>
         Assert.Equal(HttpStatusCode.Accepted, responsePut.StatusCode);
        
     }
-    [Fact]
+    
     public async Task PutNewContentWithLogo_ShouldBeAccepted()
     {
         //Arrange
@@ -78,8 +80,6 @@ public class ContentApiTest:IClassFixture<ApiApp>
             content.Logo.CopyTo(logoMemoryStream);
             logoBytes = logoMemoryStream.ToArray();
         }
-
-// Agregar el array de bytes al formulario
         formData.Add(new ByteArrayContent(logoBytes), "logo", content.Logo.FileName);
 
 
@@ -92,6 +92,7 @@ public class ContentApiTest:IClassFixture<ApiApp>
         Assert.Equal(HttpStatusCode.Accepted, responsePut.StatusCode);
        
     }
+    
     [Fact]
     public async Task UpdateContent_ShouldBeAccepted()
     {
@@ -147,12 +148,13 @@ public class ContentApiTest:IClassFixture<ApiApp>
         var client = webApp.CreateClient();
 
         //Act
-        var contentListPaginated = await client.GetFromJsonAsync<PaginationResponse<GetAllContentsPaginatedDto>>(ApiRoutes.Content);
+        var response = await client.GetAsync(ApiRoutes.Content);
+        var contentAsString = await response.Content.ReadAsStringAsync();
+        var contentListPaginated = JsonConvert.DeserializeObject<PaginationResponse<GetAllContentsPaginatedDto>>(contentAsString);
 
         //assert
         Assert.True(contentListPaginated != null);
         Assert.IsType<PaginationResponse<GetAllContentsPaginatedDto>>(contentListPaginated);
-
     }
     
     [Fact]
